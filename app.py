@@ -50,7 +50,7 @@ def result_fragment():
                 st.html(f"""
                         <div style="border-radius: 8px; background-color: rgba(127, 127, 127, 0.5); padding: 8px;">
                             <div class="contents">
-                                {st.session_state.current_result}
+                                {st.session_state.current_resp_text}
                             </div>
                         </div>
                         """)
@@ -90,7 +90,7 @@ def main():
             st.session_state.current_image_confidence = None
             # 이전 결과 관련 세션 상태 초기화
             for key in list(st.session_state.keys()):
-                if key not in ["current_file_name", "food_image_uploader", "current_result"]:
+                if key not in ["current_file_name", "food_image_uploader", "current_resp_text"]:
                     del st.session_state[key]
             st.rerun()  # 전체 앱 재실행으로 변경
 
