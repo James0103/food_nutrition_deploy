@@ -84,7 +84,7 @@ def main():
         st.session_state.score_text = None
     if "reason" not in st.session_state:
         st.session_state.reason = None
-    if "tips" not in st.tips:
+    if "tips" not in st.session_state:
         st.session_state.tips = None
     if "current_image" not in st.session_state:
         st.session_state.current_image = None
