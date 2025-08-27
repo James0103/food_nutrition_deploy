@@ -33,6 +33,7 @@ def result_fragment():
                 # 영양 성분
                 with st.container(border=False, gap=None):
                     nuts = st.session_state.current_nutrients
+                    print(nuts)
                     st.dataframe(
                         pd.DataFrame(
                             {
