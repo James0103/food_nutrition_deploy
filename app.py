@@ -28,6 +28,7 @@ def result_fragment():
                 # 점수
                 with st.container(border=False, gap=None):
                     star_value = int(float(st.session_state.current_score / 100) * 5)
+                    print(star_value)
                     st_star_rating("", read_only=True, maxValue=5, defaultValue=star_value, key="rating_widget")
                 # 영양 성분
                 with st.container(border=False, gap=None):
