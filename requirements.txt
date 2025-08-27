@@ -1,4 +1,12 @@
+opencv-python
+numpy
 tensorflow
+pandas
+python-dotenv
+openai
+langchain
+langchain-openai
 pillow
 st-star-rating
-pandas
+streamlit
+scipy

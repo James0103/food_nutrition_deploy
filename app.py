@@ -1,37 +1,9 @@
 import streamlit as st
-from module.img import get_image_from_uploader
-from module.predict import predict
-from module.api import connection_api
+from service.img import get_image_from_uploader
+from service.predict import predict
+from service.food_nutrition_service import ask_llm
 from streamlit_star_rating import st_star_rating
 import pandas as pd
-
-db_converted = {
-    "간장게장": "게장_간장",
-    "감자채볶음": "감자볶음",
-    "계란국": "달걀국",
-    "계란말이": "달걀말이",
-    "계란찜": "달걀찜",
-    "계란후라이": "달걀후라이",
-    "고추장진미채볶음": "오징어볶음",
-    "곰탕_설렁탕": "설렁탕",
-    "꽈리고추무침": "오이지무침_고추",
-    "닭계장": "닭볶음탕",
-    "도라지무침": "도라지생채",
-    "떡국_만두국": "떡국_소고기",
-    "떡꼬치": "떡강정",
-    "북엇국": "북어국",
-    "새우볶음밥": "볶음밥_새우",
-    "소세지볶음": "소시지케첩볶음",
-    "시래기국": "된장국_시래기",
-    "양념게장": "게장_양념",
-    "열무국수": "국수_열무김치",
-    "젓갈": "양념오징어젓",
-    "편육": "수육",
-    "한과": "유과",
-    "과메기": None,
-    "산낙지": None,
-    "수정과": None
-}
 
 @st.fragment
 def result_fragment():
@@ -73,10 +45,10 @@ def result_fragment():
             st.markdown("------")
             # GPT 내용
             with st.container():
-                st.html("""
+                st.html(f"""
                         <div style="border-radius: 8px; background-color: rgba(127, 127, 127, 0.5); padding: 8px;">
                             <div class="contents">
-                                이것은 테스트 내용입니다
+                                {st.session_state.current_result}
                             </div>
                         </div>
                         """)
@@ -118,10 +90,15 @@ def main():
         if st.session_state.current_result is None:
             st.session_state.current_image = uploaded_file
             img_array = get_image_from_uploader(uploaded_file)
-            pred = predict(img_array)
+            # 예측 코드
+            # 첫번째는 이미지 배열, 두번째는 모델 경로, 세번째는 class_indices경로를 넣어주면 됩니다!
+            pred = predict(img_array, 
+                           "model/models/cho_korean_food_classifier-20250827-091257.keras",
+                           "model/models/indices-20250827-091257.json")
             st.session_state.current_image_name = pred['predict'][0]
             st.session_state.current_image_confidence = pred['confidence']
-            result = connection_api(pred, [])
+            # LLM 호출 코드
+            result = ask_llm(pred['predict'][0])
             st.session_state.current_result = result
 
         # 결과 컨테이너 - fragment로 독립적으로 렌더링
