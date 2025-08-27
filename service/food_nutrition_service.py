@@ -121,18 +121,15 @@ def ask_llm(food_name):
 
 
 def ask_llm_for_ui(food_name):
-    """
-    LLM 결과를 구조화하여 점수와 영양소 정보를 반환
-    """
+   
     response_text = ask_llm(food_name)
-    
-    # 예시: '건강 점수: 85/100'과 '열량: 250' 형식으로 parsing
-    import re
-    
-    score_match = re.search(r"건강 점수[:\s]+(\d+)", response_text)
+
+    # 1) 건강 점수
+    score_match = re.search(r"건강\s*점수[:\s]+(\d+)", response_text)
     score = int(score_match.group(1)) if score_match else 0
-    
-    # DB에서 직접 영양소 조회
+    score_text = f"{score}/100"
+
+    # 2) 영양소 데이터 (DB에서 가져오기)
     food_data = get_food_nutrition_info([food_name])
     nutrients = {
         "열량(kcal)": food_data.get("energy_kcal", 0) if food_data else 0,
@@ -141,8 +138,31 @@ def ask_llm_for_ui(food_name):
         "지방(g)": food_data.get("fat_g", 0) if food_data else 0,
         "당(g)": food_data.get("sugars_g", 0) if food_data else 0,
     }
-    
-    return score, nutrients, response_text
+
+    # 3) 이유
+    reason_match = re.search(r"2\)\s*이유[:\s]*([\s\S]*?)(?:3\)|$)", response_text)
+    reasons = []
+    if reason_match:
+        reason_lines = reason_match.group(1).strip().split("\n")
+        reasons = [line.lstrip("* ").strip() for line in reason_lines if line.strip()]
+
+    # 4) 개선 팁
+    tips_match = re.search(r"3\)\s*개선\s*팁[:\s]*([\s\S]*)", response_text)
+    tips = []
+    if tips_match:
+        tip_lines = tips_match.group(1).strip().split("\n")
+        tips = [line.lstrip("* ").strip() for line in tip_lines if line.strip()]
+
+
+    return {
+        "score": score,
+        "nutrients": nutrients,
+        "analysis": {
+            "score_text": score_text,
+            "reason": reasons,
+            "tips": tips
+        }
+    }
 
 # 이 스크립트가 직접 실행될 때만 아래 코드를 실행합니다. (테스트용)
 if __name__ == "__main__":

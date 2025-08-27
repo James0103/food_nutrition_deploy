@@ -7,7 +7,7 @@ import pandas as pd
 
 @st.fragment
 def result_fragment():
-    if st.session_state.current_resp_text is not None:
+    if st.session_state.current_score is not None:
         with st.container(border=True):
             img_col, summary_col = st.columns([1, 3])
             with img_col:
@@ -52,7 +52,15 @@ def result_fragment():
                 st.html(f"""
                         <div style="border-radius: 8px; background-color: rgba(127, 127, 127, 0.5); padding: 8px;">
                             <div class="contents">
-                                {st.session_state.current_resp_text}
+                                <div class="score-text">
+                                    {st.session_state.score_text}
+                                </div>
+                                <div class="score-reason">
+                                    {st.session_state.reason}
+                                </div>
+                                <div class="score-tips">
+                                    {st.session_state.tips}
+                                </div>
                             </div>
                         </div>
                         """)
@@ -68,12 +76,16 @@ def main():
     # 현재 업로드된 파일명 추적
     if "current_file_name" not in st.session_state:
         st.session_state.current_file_name = None
-    if "current_resp_text" not in st.session_state:
-        st.session_state.current_resp_text = None
     if "current_score" not in st.session_state:
         st.session_state.current_score = None
     if "current_nutrients" not in st.session_state:
         st.session_state.current_nutrients = None
+    if "score_text" not in st.session_state:
+        st.session_state.score_text = None
+    if "reason" not in st.session_state:
+        st.session_state.reason = None
+    if "tips" not in st.tips:
+        st.session_state.tips = None
     if "current_image" not in st.session_state:
         st.session_state.current_image = None
     if "current_image_name" not in st.session_state:
@@ -84,20 +96,22 @@ def main():
     if uploaded_file is not None:
         if st.session_state.current_file_name != uploaded_file.name:
             st.session_state.current_file_name = uploaded_file.name
-            st.session_state.current_resp_text = None  # 결과 초기화
             st.session_state.current_score = None
             st.session_state.current_nutrients = None
+            st.session_state.score_text = None
+            st.session_state.reason = None
+            st.session_state.tips = None
             st.session_state.current_image = None
             st.session_state.current_image_name = None
             st.session_state.current_image_confidence = None
             # 이전 결과 관련 세션 상태 초기화
             for key in list(st.session_state.keys()):
-                if key not in ["current_file_name", "food_image_uploader", "current_resp_text"]:
+                if key not in ["current_file_name", "food_image_uploader", "current_score"]:
                     del st.session_state[key]
             st.rerun()  # 전체 앱 재실행으로 변경
 
         # 이미지 처리 및 예측 (새 파일일 때만)
-        if st.session_state.current_resp_text is None:
+        if st.session_state.current_score is None:
             st.session_state.current_image = uploaded_file
             img_array = get_image_from_uploader(uploaded_file)
             # 예측 코드
@@ -108,10 +122,12 @@ def main():
             st.session_state.current_image_name = pred['predict'][0]
             st.session_state.current_image_confidence = pred['confidence']
             # LLM 호출 코드
-            score, nutrients, response_text = ask_llm_for_ui(pred['predict'][0])
-            st.session_state.current_score = score
-            st.session_state.current_nutrients = nutrients
-            st.session_state.current_resp_text = response_text
+            results = ask_llm_for_ui(pred['predict'][0])
+            st.session_state.current_score = results["score"]
+            st.session_state.current_nutrients = results["nutrients"]
+            st.session_state.score_text = results["analysis"]["score_text"]
+            st.session_state.reason = results["analysis"]["reason"]
+            st.session_state.tips = results["analysis"]["tips"]
 
 
         # 결과 컨테이너 - fragment로 독립적으로 렌더링
