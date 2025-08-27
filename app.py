@@ -93,8 +93,8 @@ def main():
             # 예측 코드
             # 첫번째는 이미지 배열, 두번째는 모델 경로, 세번째는 class_indices경로를 넣어주면 됩니다!
             pred = predict(img_array, 
-                           "model/models/cho_korean_food_classifier-20250827-091257.keras",
-                           "model/models/indices-20250827-091257.json")
+                           "model/models/test_model.keras",
+                           "model/models/test_indices.json")
             st.session_state.current_image_name = pred['predict'][0]
             st.session_state.current_image_confidence = pred['confidence']
             # LLM 호출 코드
