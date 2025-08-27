@@ -7,7 +7,7 @@ import pandas as pd
 
 @st.fragment
 def result_fragment():
-    if st.session_state.current_result is not None:
+    if st.session_state.current_resp_text is not None:
         with st.container(border=True):
             img_col, summary_col = st.columns([1, 3])
             with img_col:
