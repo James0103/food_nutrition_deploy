@@ -2,8 +2,8 @@
 import sys
 import os
 import re
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-# import src.db.database as DB
+# 현재 파일의 디렉토리를 기준으로 상위 디렉토리 추가
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from db import database as DB
 import streamlit as st
 import os
@@ -61,6 +61,8 @@ def get_food_nutrition_info(food_names: list):
               데이터를 찾지 못한 경우 None을 반환합니다.
     """
     for food_name in food_names:
+        # print("food_name")
+        # print(food_name)
         # 데이터베이스 모듈을 통해 음식 정보를 가져옵니다.
         food_datas = DB.get_food_info_by_name(food_name)
 
@@ -165,7 +167,7 @@ def ask_llm_for_ui(food_name):
         }
     }
 
-# 이 스크립트가 직접 실행될 때만 아래 코드를 실행합니다. (테스트용)
-if __name__ == "__main__":
-    # '김치찜'에 대한 영양 분석을 요청하고 결과를 출력합니다.
-    print(ask_llm("김치찜"))
+# # 이 스크립트가 직접 실행될 때만 아래 코드를 실행합니다. (테스트용)
+# if __name__ == "__main__":
+#     # '김치찜'에 대한 영양 분석을 요청하고 결과를 출력합니다.
+#     print(ask_llm("김치찜"))

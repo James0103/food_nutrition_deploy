@@ -1,8 +1,9 @@
-import os, sqlite3
+import sqlite3
+import os
 from contextlib import contextmanager
 
-# DB_PATH = '../../food_nutrition.db'
-DB_PATH = os.path.join(os.path.dirname(__file__), '../../food_nutrition.db')
+# 현재 파일의 디렉토리를 기준으로 데이터베이스 경로 설정
+DB_PATH = os.path.join(os.path.dirname(__file__), 'food_nutrition.db')
 
 @contextmanager
 def get_db_connection():
@@ -33,12 +34,12 @@ def get_food_info_by_name(food_name):
             # 사용자 입력은 두 번째 인자로 안전하게 전달됩니다.
             query = """
                     SELECT * 
-                    FROM FOOD_NUTRITION 
-                    WHERE REPLACE(FOOD_NAME, ' ', '') LIKE ?
+                    FROM food_nutrition 
+                    WHERE REPLACE(food_name, ' ', '') LIKE ?
                     ORDER BY
                         CASE
-                            WHEN REPLACE(FOOD_NAME, ' ', '') LIKE ? THEN 1
-                            WHEN REPLACE(FOOD_NAME, ' ', '') LIKE ? THEN 2
+                            WHEN REPLACE(food_name, ' ', '') LIKE ? THEN 1
+                            WHEN REPLACE(food_name, ' ', '') LIKE ? THEN 2
                             ELSE 3
                         END
                     """
