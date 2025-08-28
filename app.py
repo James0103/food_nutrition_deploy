@@ -183,11 +183,11 @@ def main():
             # 예측 코드
             # 첫번째는 이미지 배열, 두번째는 모델 경로, 세번째는 class_indices경로를 넣어주면 됩니다!
             pred = predict(img_array, 
-                           "model/models/cho_korean_food_classifier-fine-20250827-161229.keras",
+                           "model/models/kfood_model.keras",
                            "model/models/indices-fine-20250827-161229.json")
             
             st.session_state.current_image_confidence = pred['confidence']
-            if float(pred['confidence']) < 40.0:
+            if float(pred['confidence']) < 50.0:
                 st.session_state.image_classified_or_not = False
                 st.session_state.current_image_name = "미분류"
                 st.session_state.current_score = 1
