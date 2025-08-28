@@ -4,6 +4,7 @@ from service.predict import predict
 from service.food_nutrition_service import ask_llm_for_ui
 from streamlit_star_rating import st_star_rating
 import pandas as pd
+import math
 
 def arranged_text(raw_text):
     """텍스트를 정리하여 HTML에서 사용할 수 있도록 포맷팅합니다."""
@@ -28,6 +29,12 @@ def one_line_text(raw_text):
 
     return text_group
 
+def map_quarter_to_half(x: float, eps: float = 1e-9) -> float:
+    ip = math.floor(x)
+    frac = x - ip
+    if abs(frac - 0.25) < eps or abs(frac - 0.75) < eps:
+        return ip + 0.5
+    return x
 
 @st.fragment
 def result_fragment():
@@ -53,7 +60,7 @@ def result_fragment():
                 if st.session_state.image_classified_or_not == True:
                     # 점수
                     with st.container(border=False, gap=None):
-                        star_value = int(float(st.session_state.current_score / 100) * 5)
+                        star_value = map_quarter_to_half(float(st.session_state.current_score / 100) * 5.0)
                         print("scoring")
                         print(st.session_state.current_score)
                         print(star_value)
