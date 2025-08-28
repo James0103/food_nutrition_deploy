@@ -130,9 +130,11 @@ def result_fragment():
 
 
 def main():
-    st.title("🥣 AI 음식 검사")
+    st.title("🥣 AI 기반 한식 영양 분석 서비스")
     st.badge("음식 사진을 업로드해서 좋은 음식인지 나쁜 음식인지 알아보세요", color="blue")
     st.divider()
+    # st.html("<div class=""<a href='mailto:cafealpa@gmail.com'>링크걸릴 텍스트</a>")
+    # st.write("조남형(팀장) : [cafealpa@gmail.com](%s)" % "cafealpa@gmail.com")
 
     uploaded_file = st.file_uploader("아래 버튼을 눌러 사진을 업로드해주세요", type=["jpg", "jpeg", "png"], accept_multiple_files=False, label_visibility="visible", width="stretch", key="food_image_uploader")
     
@@ -204,10 +206,29 @@ def main():
 
         # 결과 컨테이너 - fragment로 독립적으로 렌더링
         result_fragment()
+        
+    st.markdown("------")
+    st.write("제작자 : ICT-3기 A팀")
+    st.html("""
+        <div class="team-member">
+            <div class="member-name">
+                조남형(팀장) : 
+                <a href='mailto:cafealpa@gmail.com'>이메일 보내기</a>
+            </div>
+            <div class="member-name">
+                조소현 : 
+                <a href='mailto:lablim03@gmail.com'>이메일 보내기</a>
+            </div>
+            <div class="member-name">
+                정현후 : 
+                <a href='mailto:jameshhjung@gmail.com'>이메일 보내기</a>
+            </div>
+        </div>
+    """)
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="AI 음식 검사", 
+        page_title="AI 기반 한식 영양 분석 서비스", 
         page_icon="🥣",
         layout="wide"
     )
